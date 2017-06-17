@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+sudo apt-get update -y
+sudo apt-get upgrade -y
+sudo apt-get install -y \
+  build-essential \
+  pkg-config \
+  libyaml-cpp-dev \
+  cmake \
+  libboost-dev \
+  git \
+  pigz \
+  libgomp1 \
+  libmpich-dev \
+  mpich
+
+sudo apt-get clean -y
+sudo apt-get autoclean -y
+sudo apt-get autoremove -y
+
+mkdir tmp && cd tmp
+
+wget https://repo.continuum.io/archive/Anaconda3-4.3.0-Linux-x86_64.sh
+bash Anaconda3-4.3.0-Linux-x86_64.sh -b
+echo "export PATH=$HOME/anaconda3/bin:\$PATH" >> ~/.bashrc
+
+export ACCEPT_INTEL_PYTHON_EULA=yes
+conda update conda -y
+conda config --add channels intel
+conda create -n idp intelpython3_full python=3
+source activate idp
+conda install numpy scipy cython -c intel --no-update-deps
+pip install brainiak
+pip install flask Flask-Session
+source deactivate idp
+
+# Install dcm2niix
+git clone https://github.com/rordenlab/dcm2niix
+cd dcm2niix
+mkdir build && cd build
+cmake -DBATCH_VERSION=ON ..
+make
+sudo make install
+
+# Go back to main build directory
+cd ../../
+
+# Install fsl-core
+wget -O- http://neuro.debian.net/lists/yakkety.us-nh.full | sudo tee /etc/apt/sources.list.d/neurodebian.sources.list
+sudo apt-key adv --recv-keys --keyserver hkp://pgp.mit.edu:80 0xA5D32F012649A5A9
+sudo apt-get update
+sudo apt-get install fsl-core -y
+
+cd ../
+rm -rf tmp
+
+# Install rtfcma-prisma
+# git clone https://github.com/IntelPNI/rtfcma-prisma

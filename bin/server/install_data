@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+mkdir data
+
+sftp $1@$2 << EOF
+  get /mnt/Data01/offline/strongbad01/epoch/sb_714tr.npy ./data/sb_714tr.npy
+  get /mnt/Data01/offline/strongbad01/selection4mm/corr/allsubs_select_seq_top2000.nii.gz ./data/allsubs_select_seq_top2000.nii.gz
+  get /mnt/Data01/offline/strongbad01/model/svm_all_2000.pkl ./data/svm_all_2000.pkl
+  get /mnt/Data01/data/20161219.1219161_rtstrongbad01.1219161_rtstrongbad01/reg/f2mni.feat/reg/example_func2standard.mat ./data/example_func2standard.mat
+  get /mnt/Data01/offline/strongbad01/anat4mm/canonical.nii.gz ./data/canonical.nii.gz
+EOF
