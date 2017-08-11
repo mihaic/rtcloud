@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+if [[ $# -ne 2 ]]; then
+  echo "Usage: copy_dcm INPUT_DIR OUTPUT_DIR"
+  exit 1
+fi
+
+mkdir -p $2
+
+for i in $(ls $1); do
+  path=`realpath $1/$i`
+  if [[ ${i: -4} == ".dcm" ]]; then
+    echo Processing $path
+    filename=$(basename "$path")
+    cp $path $2/$filename
+
+    sleep 0.5
+  fi
+done
