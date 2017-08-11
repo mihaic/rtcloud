@@ -3,13 +3,13 @@ import sys
 import json
 import argparse
 
-from utils import Logger
+from rtcloud.utils import Logger
 
 from flask import Flask, request, redirect, url_for, flash, session, send_from_directory
 from werkzeug.utils import secure_filename
 from flask_session import Session
 
-import experiments
+import rtcloud.experiments
 
 class BrainiakCloud:
     def __init__(self, opts):
@@ -47,7 +47,7 @@ class BrainiakCloud:
     def allowed_file(self, filename):
         # TODO: This is a crappy way to check extensions
         return '.' in filename and \
-               filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+                filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
     def index(self):
         return 'Hello, world!'
