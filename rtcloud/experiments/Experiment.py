@@ -1,4 +1,5 @@
-from utils import Logger
+from ..utils import Logger
+
 
 class Experiment:
     def __init__(self, opts):
@@ -7,4 +8,5 @@ class Experiment:
         self.experimentClass = self.__class__.__name__
 
     def process(self, filepath):
-        raise NotImplementedError("Experiment class requires a `process` method.")
+        raise NotImplementedError(
+            "Experiment class requires a `process` method.")

@@ -9,9 +9,10 @@
   "windowSize": 20,
   "numTRs": 714,
   "BASE_URL": "brainiak",
-  "UPLOAD_FOLDER": "/home/ubuntu/rtfcma-prisma/tmp",
+  "UPLOAD_FOLDER": "/home/ubuntu/rtcloud/tmp",
   "ALLOWED_EXTENSIONS": [
     "dcm"
   ],
-  "DEBUG": true
+  "DEBUG": true,
+  "IGNORE_EXPERIMENT": true
 }

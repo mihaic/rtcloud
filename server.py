@@ -9,7 +9,8 @@ from flask import Flask, request, redirect, url_for, flash, session, send_from_d
 from werkzeug.utils import secure_filename
 from flask_session import Session
 
-import rtcloud.experiments
+import rtcloud.experiments as experiments
+
 
 class BrainiakCloud:
     def __init__(self, opts):
@@ -34,11 +35,14 @@ class BrainiakCloud:
 
         # Initialize routes
         self.app.add_url_rule(self.BASE_URL, '/', self.index, methods=['GET'])
-        self.app.add_url_rule(self.BASE_URL, 'upload', self.upload, methods=['POST'])
+        self.app.add_url_rule(self.BASE_URL, 'upload',
+                              self.upload, methods=['POST'])
 
-        # Initialize experiment
-        self.experimentClass = getattr(experiments, opts.get('experimentClass'))
-        self.experiment = self.experimentClass(opts)
+        if not opts.get('IGNORE_EXPERIMENT'):
+            # Initialize experiment
+            self.experimentClass = getattr(
+                experiments, opts.get('experimentClass'))
+            self.experiment = self.experimentClass(opts)
 
         # Ready to roll
         self.app.debug = opts.get('DEBUG')
@@ -47,7 +51,7 @@ class BrainiakCloud:
     def allowed_file(self, filename):
         # TODO: This is a crappy way to check extensions
         return '.' in filename and \
-                filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+            filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
     def index(self):
         return 'Hello, world!'
@@ -68,10 +72,13 @@ class BrainiakCloud:
             filename = secure_filename(file.filename)
             filepath = os.path.join(self.app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
-            self.experiment.process(filepath)
+
+            if not opts.get('IGNORE_EXPERIMENT'):
+                self.experiment.process(filepath)
 
             return 'Success!'
         return 'FAIL!'
+
 
 if __name__ == '__main__':
     arg_parser = argparse.ArgumentParser()
