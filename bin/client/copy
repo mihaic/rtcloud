@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ $# -lt 2 ]]; then
+  echo "Usage: copy_dcm INPUT_DIR OUTPUT_DIR FILE_PATTERN"
+  exit 1
+fi
+
+mkdir -p $2
+
+for i in $(ls $1/$3); do
+  path=`realpath $i`
+  echo Processing $path
+  filename=$(basename "$path")
+  cp $path $2/$filename
+
+  sleep 0.5
+done
