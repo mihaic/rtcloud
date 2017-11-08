@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+sudo apt install -y \
+  build-essential \
+  libgomp1 \
+  libmpich-dev \
+  mpich \
+  python3-dev \
+  python3-pip \
+  python3-venv
+
+python3 -m pip install --user -U pip
+
+rm -rf ~/brainiak
+git clone https://github.com/brainiak/brainiak ~/brainiak
+
+pushd ~/brainiak
+
+python3 -m venv venv
+source venv/bin/activate
+
+pip install -U -r requirements-dev.txt
+python setup.py install
+
+deactivate
+
+popd
