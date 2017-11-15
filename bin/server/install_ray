@@ -22,7 +22,7 @@ source ~/venv/bin/activate
 
 pushd python
 
-pip install jupyter
+pip install jupyter cython
 python setup.py install
 
 popd
