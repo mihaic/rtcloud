@@ -3,6 +3,7 @@
 sudo apt install -y \
   build-essential \
   libgomp1 \
+  gfortran \
   libmpich-dev \
   mpich \
   python3-dev \
@@ -16,8 +17,7 @@ pushd ~/brainiak
 
 source ~/venv/bin/activate
 
-pip install -U -r requirements-dev.txt
-python setup.py install
+pip install .
 
 deactivate
 
