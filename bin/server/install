@@ -15,5 +15,9 @@ sudo -H python3 -m pip install -U pip
 sudo -H pip install virtualenv
 sudo -H pip3 install virtualenv
 
+pushd ~/
+python3 -m venv venv
+popd
+
 $DIR/install_brainiak
 $DIR/install_ray
