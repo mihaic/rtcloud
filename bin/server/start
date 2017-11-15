@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 
 source ~/venv/bin/activate
-ray start $@
+ray start --head --redis-port=12508
 deactivate

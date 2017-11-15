@@ -29,3 +29,7 @@ popd
 
 $DIR/install_brainiak
 $DIR/install_ray
+
+# Install remote desktop
+sudo apt-get install -y tightvncserver
+vncserver :1 -geometry 800x600 -depth 24
