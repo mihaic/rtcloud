@@ -17,19 +17,15 @@ sudo -H python3 -m pip install -U pip
 sudo -H pip install virtualenv
 sudo -H pip3 install virtualenv
 
-pushd ~/
-virtualenv -p python3 venv
-source ~/venv/bin/activate
-
+python3 -m venv venv
+source venv/bin/activate
 # These should be installed, but just in case
 pip install -U pip wheel
-
 deactivate
-popd
 
 $DIR/install_brainiak
 $DIR/install_ray
 
 # Install remote desktop
-sudo apt-get install -y tightvncserver
-vncserver :1 -geometry 800x600 -depth 24
+# sudo apt-get install -y tightvncserver
+# vncserver :1 -geometry 800x600 -depth 24
