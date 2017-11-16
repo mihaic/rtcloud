@@ -13,20 +13,9 @@ sudo apt install -y \
   python-dev \
   python3-dev
 
-rm -rf ~/ray
-git clone https://github.com/brainiak/ray ~/ray
-
-pushd ~/ray
-
-source ~/venv/bin/activate
-
-pushd python
-
+source venv/bin/activate
+pushd deps/ray/python
 pip install jupyter cython
 python setup.py install
-
 popd
-
 deactivate
-
-popd

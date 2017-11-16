@@ -26,13 +26,13 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install Ray
-pushd lib/ray/python
+pushd deps/ray/python
 pip install jupyter cython
 python setup.py develop
 popd
 
 # Install BrainIAK
-pushd lib/brainiak
+pushd deps/brainiak
 pip install numpy pybind11
 pip install -e .
 popd
