@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+
+sudo apt update
+sudo apt install -y \
+  cmake \
+  pkg-config \
+  build-essential \
+  autoconf \
+  curl \
+  libtool \
+  unzip \
+  python \
+  python-dev \
+  python3-dev
+
+rm -rf ~/ray
+git clone https://github.com/brainiak/ray ~/ray
+
+pushd ~/ray
+
+source ~/venv/bin/activate
+
+pushd python
+
+pip install jupyter cython
+python setup.py install
+
+popd
+
+deactivate
+
+popd

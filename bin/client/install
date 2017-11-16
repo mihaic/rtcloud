@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+binaries=(
+# BrainIAK
+llvm
+cmake
+mpich
+python3
+
+# Ray
+cmake
+pkg-config
+automake
+autoconf
+libtool
+boost
+wget
+)
+
+brew update
+brew install ${binaries[@]}
+brew upgrade ${binaries[@]}
+
+python3 -m venv venv
+
+source venv/bin/activate
+
+# Install Ray
+pushd lib/ray/python
+pip install jupyter cython
+python setup.py install
+popd
+
+# Install BrainIAK
+pushd lib/brainiak
+pip install .
+popd
+
+deactivate
+
