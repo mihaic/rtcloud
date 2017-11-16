@@ -13,6 +13,7 @@ sudo apt install -y \
 source venv/bin/activate
 pushd deps/brainiak
 git submodule update
+pip install numpy pybind11
 pip install -e .
 popd
 deactivate
