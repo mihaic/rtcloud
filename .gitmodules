@@ -1,0 +1,6 @@
+[submodule "lib/ray"]
+	path = lib/ray
+	url = https://github.com/brainiak/ray
+[submodule "lib/brainiak"]
+	path = lib/brainiak
+	url = https://github.com/brainiak/brainiak
