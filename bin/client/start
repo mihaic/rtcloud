@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+ray start --redis-address 34.224.216.126:12508

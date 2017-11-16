@@ -1,4 +1,7 @@
 import ray
-import brainiak
+from rtcloud.utils import Config
 
-ray.init(redis_address='52.201.23.20:12508')
+config = Config("conf/ray.example.json")
+
+address = ":".join([config.get("RAY_IP"), config.get("RAY_PORT")])
+ray.init(redis_address=address)
