@@ -1,10 +1,19 @@
-matrix:
-  include:
-    - sudo: required
-      services:
-        - docker
-    - os: osx
+sudo: reuqired
+language: python
+
+python:
+   "3.4"
+   "3.5"
+   "3.6"
+   "3.7-dev"
+
+os:
+   - linux
+   - osx
+
+services:
+   - docker
 
 script:
-  - pip install cibuildwheel==0.6.0
+  - python3 -m pip install cibuildwheel==0.6.0
   - cibuildwheel --output-dir wheelhouse
