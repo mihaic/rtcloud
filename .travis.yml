@@ -11,6 +11,9 @@ os:
    - linux
    - osx
 
+env:
+   - CIBW_SKIP="cp27-* cp33-*"
+
 services:
    - docker
 
