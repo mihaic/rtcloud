@@ -1,7 +1,7 @@
 import os
 import sys
 import json
-import argparse
+import click
 
 from rtcloud.utils import Logger
 
@@ -80,13 +80,11 @@ class BrainiakCloud:
         return 'FAIL!'
 
 
-if __name__ == '__main__':
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument('conf', help='path to configuration (*.json)')
-    args = arg_parser.parse_args()
-
+@click.command(context_settings=dict(help_option_names=["-h", "--help"]))
+@click.argument('conf')
+def serve(conf):
     opts = {}
-    with open(args.conf) as json_data:
+    with open(conf) as json_data:
         # TODO: Error handling
         # TODO: Check schema and print usage if wrong
         opts = json.load(json_data)

@@ -43,5 +43,7 @@ pip install numpy pybind11
 pip install -e .
 popd
 
+# Install rtcloud
+pip install -e .
 deactivate
 

@@ -1,32 +1,27 @@
 from setuptools import setup
 
 setup(
-    name='brainiak-rtcloud',
+    name='rtcloud',
     version='0.0.1',
     install_requires=[
-            'brainiak',
-            'flask',
-            'flask-session',
-            'watchdog',
-            'requests',
-            'cython',
-            'mpi4py',
-            'nitime',
-            'numpy',
-            'scikit-learn',
-            'scipy',
-            'pymanopt',
-            'theano',
-            'pybind11',
-            'nibabel',
-            'typing'
+        'click',
+        'requests',
+        'tqdm',
+        'watchdog',
+        'flask',
+        'flask_session'
     ],
     author='Princeton Neuroscience Institute and Intel Corporation',
     author_email='dsuo@princeton.edu',
-    url='https://github.com/IntelPNI/rtfcma-prisma',
+    url='https://github.com/brainiak/rtcloud',
     description='Brain Imaging Analysis Kit Cloud',
     license='Apache 2',
     keywords='neuroscience, algorithm, fMRI, distributed, scalable',
     packages=['rtcloud'],
-    python_requires='>=3.4'
+    python_requires='>=3.4',
+    entry_points='''
+        [console_scripts]
+        watch=rtcloud.watcher:watch
+        serve=rtcloud.server:serve
+    '''
 )

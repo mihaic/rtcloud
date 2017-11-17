@@ -29,3 +29,8 @@ $DIR/install_ray
 # Install remote desktop
 # sudo apt-get install -y tightvncserver
 # vncserver :1 -geometry 800x600 -depth 24
+
+# Install rtcloud
+source venv/bin/activate
+pip install -e .
+deactivate
