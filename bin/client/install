@@ -33,6 +33,12 @@ popd
 
 # Install BrainIAK
 pushd deps/brainiak
+export CC=/usr/local/opt/llvm/bin/clang
+export CXX=/usr/local/opt/llvm/bin/clang++
+export LDFLAGS="-L/usr/local/opt/llvm/lib "\
+"-Wl,-rpath,/usr/local/opt/llvm/lib $LDFLAGS"
+export CPPFLAGS="-I/usr/local/opt/llvm/include $CPPFLAGS"
+
 pip install numpy pybind11
 pip install -e .
 popd
