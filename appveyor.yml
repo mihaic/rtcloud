@@ -1,6 +1,11 @@
+environment:
+   matrix:
+      - PYTHON: "C:\\Python33-x64"
+      - PYTHON_VERSION: "3.3.x"
+      - PYTHON_ARCH: "64"
 build_script:
-  - python3 -m pip install cibuildwheel==0.6.0
-  - cibuildwheel --output-dir wheelhouse
+   - "%PYTHON%\\python.exe -m pip install wheel cibuildwheel==0.6.0"
+   - "cibuildwheel --output-dir wheelhouse"
 artifacts:
-  - path: "wheelhouse\\*.whl"
-    name: Wheels
+   - path: "wheelhouse\\*.whl"
+     name: Wheels
