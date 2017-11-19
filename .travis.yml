@@ -6,7 +6,7 @@ matrix:
         before_install: brew install python3
         env: CIBW_SKIP="cp27-* cp33-*" HOMEBREW_NO_AUTO_UPDATE=1
       - os: linux
-        before_install: sudo apt install python3-pip python3-venv
+        before_install: sudo apt update && sudo apt install python3-pip python3-venv
         env: CIBW_SKIP="cp27-* cp33-*"
 
 services:
@@ -16,5 +16,6 @@ script:
   - python3 -m venv venv
   - source venv/bin/activate
   - pip install cibuildwheel==0.6.0
-  - rm -rf wheelhouse && cibuildwheel --output-dir wheelhouse
+  - rm -rf wheelhouse
+  - cibuildwheel --output-dir wheelhouse
 
