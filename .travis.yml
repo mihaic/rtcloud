@@ -1,5 +1,4 @@
 sudo: required
-language: python
 
 os:
    - linux
@@ -12,7 +11,7 @@ services:
    - docker
 
 script:
-  - python -m pip install cibuildwheel==0.6.0
+  - python3 -m pip install cibuildwheel==0.6.0
   - cibuildwheel --output-dir wheelhouse
 
 matrix:
