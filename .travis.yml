@@ -19,6 +19,6 @@ script:
   - python3 -m venv venv
   - source venv/bin/activate
   - pip install cibuildwheel==0.6.0
-  - rm -rf wheelhouse
-  - cibuildwheel --output-dir wheelhouse
+  - rm -rf ./wheelhouse
+  - cibuildwheel --output-dir ./wheelhouse
 
