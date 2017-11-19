@@ -1,4 +1,4 @@
-sudo: reuqired
+sudo: required
 language: python
 
 os:
@@ -12,5 +12,12 @@ services:
    - docker
 
 script:
-  - python3 -m pip install cibuildwheel==0.6.0
+  - python -m pip install cibuildwheel==0.6.0
   - cibuildwheel --output-dir wheelhouse
+
+matrix:
+   include:
+      - os: osx
+        before_install: brew install python3
+      - os: linux
+        before_install: sudo apt install python3-pip
