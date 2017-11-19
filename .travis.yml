@@ -9,6 +9,7 @@ matrix:
 
 env:
    - CIBW_SKIP="cp27-* cp33-*"
+   - HOMEBREW_NO_AUTO_UPDATE=1
 
 services:
    - docker
