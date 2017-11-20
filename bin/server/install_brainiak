@@ -10,10 +10,12 @@ sudo apt install -y \
   python3-pip \
   python3-venv
 
-source venv/bin/activate
-pushd deps/brainiak
-git submodule update
-pip install numpy pybind11
-pip install -e .
-popd
-deactivate
+# source venv/bin/activate
+# pushd deps/brainiak
+# git submodule update
+# pip install numpy pybind11
+# pip install -e .
+# popd
+# deactivate
+
+python3 -m pip install --user -U brainiak
