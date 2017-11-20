@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+which -s brew
+if [[ $? != 0 ]]; then
+  /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
 binaries=(
 # BrainIAK
 llvm
@@ -27,7 +32,7 @@ source venv/bin/activate
 
 # Install Ray
 pushd deps/ray/python
-pip install jupyter cython
+pip install jupyter cython numpy
 python setup.py develop
 popd
 

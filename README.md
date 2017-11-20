@@ -5,15 +5,18 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 
-## Getting started on client machine (MacOS only)
+## Getting started on client machine
+First, install Docker ([Mac](https://store.docker.com/editions/community/docker-ce-desktop-mac), [Linux](https://store.docker.com/editions/community/docker-ce-server-ubuntu), [Windows](https://store.docker.com/editions/community/docker-ce-desktop-windows)). Then, run
 ```bash
-git clone --recursive git@github.com:brainiak/rtcloud.git
-./bin/client/install
+# Sudo may be necessary
+docker pull brainiak/rtcloud
+docker run -it -p 8888:8888 brainiak/rtcloud
 ```
+
 
 ## Getting started on server machine (Ubuntu 16.04)
 ```bash
-git clone --recursive git@github.com:brainiak/rtcloud.git
+git clone git@github.com:brainiak/rtcloud.git
 ./bin/server/install
 ```
 
@@ -21,3 +24,4 @@ git clone --recursive git@github.com:brainiak/rtcloud.git
 ```
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
+- [HPC on EC2](https://d0.awsstatic.com/Projects/P4114756/deploy-elastic-hpc-cluster_project.pdf)
