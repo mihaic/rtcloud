@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 
-DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+set -x
 
-# su - ubuntu not working
+export USER_HOME=/home/ubuntu
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 apt update
 apt install -y \
@@ -29,8 +31,8 @@ apt install -y \
    python3 -m pip install -U brainiak
 
 # Install rtcloud
-git clone https://github.com/brainiak/rtcloud
-pushd rtcloud
+git clone https://github.com/brainiak/rtcloud $USER_HOME/rtcloud
+pushd $USER_HOME/rtcloud
 python3 -m pip install .
 popd
 
@@ -51,4 +53,11 @@ echo "StrictHostKeyChecking no" >> /etc/ssh/ssh_config
 echo "UserKnownHostsFile=/dev/null" >> /etc/ssh/ssh_config
 
 # Set permissions
-chown -R ubuntu:ubuntu /tmp/rtcloud
+chown -R ubuntu:ubuntu $USER_HOME/rtcloud
+
+# Check user
+su - ubuntu
+env
+
+# Run server as ubuntu
+su ubuntu -c "serve $USER_HOME/server.out 2>&1 &"
