@@ -12,7 +12,7 @@ cmake
 mpich
 python3
 
-aws
+awscli
 
 # Ray
 # cmake
@@ -46,13 +46,12 @@ export LDFLAGS="-L/usr/local/opt/llvm/lib "\
 "-Wl,-rpath,/usr/local/opt/llvm/lib $LDFLAGS"
 export CPPFLAGS="-I/usr/local/opt/llvm/include $CPPFLAGS"
 
-pip install numpy pybind11 cython scipy
-pip install brainiak
 # pip install -e .
 # popd
 
 # Install rtcloud
 pip install -e .
+env ARCHFLAGS="-arch x86_64" pip install -e '.[demo]'
 
 deactivate
 

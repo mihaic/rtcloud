@@ -11,6 +11,7 @@ First, install Docker ([Mac](https://store.docker.com/editions/community/docker-
 # Sudo may be necessary
 docker pull brainiak/rtcloud
 docker run -it -p 8888:8888 brainiak/rtcloud
+./bin/client/notebook
 ```
 
 ## Getting started on server machine (Ubuntu 16.04)

@@ -33,7 +33,7 @@ apt install -y \
 # Install rtcloud
 git clone https://github.com/brainiak/rtcloud $USER_HOME/rtcloud
 pushd $USER_HOME/rtcloud
-python3 -m pip install .
+python3 -m pip install -e .
 popd
 
 # Run scripts for master and compute
@@ -60,4 +60,4 @@ su - ubuntu
 env
 
 # Run server as ubuntu
-su ubuntu -c "serve $USER_HOME/server.out 2>&1 &"
+su ubuntu -c "serve $USER_HOME/rtcloud/conf/example.json > $USER_HOME/server.out 2>&1 &"

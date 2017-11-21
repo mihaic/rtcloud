@@ -11,15 +11,17 @@ setup(
         'flask',
         'flask_session',
         'cfncluster',
-        'brainiak'
-
-        # Add BrainIAK dependencies to install_requires as well
-        #  'numpy',
-        #  'scipy',
-        #  'pybind11',
-        #  'cython',
-        #  'brainiak'
+        'numpy',
+        'scipy',
+        'pybind11',
+        'cython'
     ],
+    extras_require={
+        'demo': [
+            'jupyter',
+            'brainiak'
+        ]
+    },
     author='Princeton Neuroscience Institute and Intel Corporation',
     author_email='dsuo@princeton.edu',
     url='https://github.com/brainiak/rtcloud',

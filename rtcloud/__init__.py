@@ -4,6 +4,10 @@ Your brain in the cloud.
 A work in progress. More documentation to come.
 """
 
+from .client import (
+    Client
+)
+
 from .experiments import (
     Experiment,
     FCMAExperiment,
@@ -16,6 +20,8 @@ from .utils import (
 )
 
 __all__ = [
+    'Client',
+
     'Experiment',
     'FCMAExperiment',
     'SearchlightExperiment',
