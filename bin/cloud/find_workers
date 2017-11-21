@@ -9,5 +9,5 @@ COMPUTE=`aws ec2 describe-instances --filter Name=tag-value,Values=Compute --no-
 
 # Write compute node ipaddresses to host file
 echo $COMPUTE | jq -c -r '.[]' | while read i; do
-echo $i >> /root/hostnames
+echo $i >> $HOME/hostnames
 done
