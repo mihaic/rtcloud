@@ -5,5 +5,3 @@ COPY . /rtcloud
 
 WORKDIR /rtcloud
 RUN python3 -m pip install -e .
-
-

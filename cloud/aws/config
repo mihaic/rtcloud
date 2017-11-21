@@ -1,0 +1,36 @@
+# http://cfncluster.readthedocs.io/en/latest/configuration.html?highlight=update_check#configuration-options
+
+[aws]
+aws_region_name = us-east-1
+
+[cluster default]
+key_name = rtfmri
+vpc_settings = public
+
+[vpc public]
+vpc_id = vpc-5c40b639
+master_subnet_id = subnet-de395abb
+
+[global]
+cluster_template = rtcloud
+update_check = true
+sanity_check = true
+
+[cluster rtcloud]
+base_os = ubuntu1604
+key_name = rtfmri
+vpc_settings = public
+
+master_instance_type = c4.8xlarge
+compute_instance_type = c4.8xlarge
+initial_queue_size = 2
+max_queue_size = 4
+
+s3_read_resource = arn:aws:s3:::brainiak/*
+post_install = s3://brainiak/install.sh
+
+master_root_volume_size = 200
+compute_root_volume_size = 200
+
+# We should set this to false
+maintain_initial_size = true

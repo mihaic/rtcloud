@@ -12,14 +12,16 @@ cmake
 mpich
 python3
 
+aws
+
 # Ray
-cmake
-pkg-config
-automake
-autoconf
-libtool
-boost
-wget
+# cmake
+# pkg-config
+# automake
+# autoconf
+# libtool
+# boost
+# wget
 )
 
 brew update
@@ -31,24 +33,26 @@ python3 -m venv venv
 source venv/bin/activate
 
 # Install Ray
-pushd deps/ray/python
-pip install jupyter cython numpy
-python setup.py develop
-popd
+# pushd deps/ray/python
+# pip install jupyter cython numpy
+# python setup.py develop
+# popd
 
 # Install BrainIAK
-pushd deps/brainiak
+# pushd deps/brainiak
 export CC=/usr/local/opt/llvm/bin/clang
 export CXX=/usr/local/opt/llvm/bin/clang++
 export LDFLAGS="-L/usr/local/opt/llvm/lib "\
 "-Wl,-rpath,/usr/local/opt/llvm/lib $LDFLAGS"
 export CPPFLAGS="-I/usr/local/opt/llvm/include $CPPFLAGS"
 
-pip install numpy pybind11
-pip install -e .
-popd
+pip install numpy pybind11 cython scipy
+pip install brainiak
+# pip install -e .
+# popd
 
 # Install rtcloud
 pip install -e .
+
 deactivate
 

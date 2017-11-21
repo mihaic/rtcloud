@@ -13,11 +13,16 @@ docker pull brainiak/rtcloud
 docker run -it -p 8888:8888 brainiak/rtcloud
 ```
 
-
 ## Getting started on server machine (Ubuntu 16.04)
 ```bash
 git clone git@github.com:brainiak/rtcloud.git
 ./bin/server/install
+```
+
+## Setting up cloud formation
+```bash
+aws configure
+./bin/cloud/launch
 ```
 
 ## TODO
@@ -25,3 +30,10 @@ git clone git@github.com:brainiak/rtcloud.git
 echo fs.inotify.max_user_watches=524288 | sudo tee -a /etc/sysctl.conf && sudo sysctl -p
 ```
 - [HPC on EC2](https://d0.awsstatic.com/Projects/P4114756/deploy-elastic-hpc-cluster_project.pdf)
+
+## Switching AWS regions
+- May need to use custom [AMI](https://github.com/awslabs/cfncluster/blob/master/amis.txt)
+
+## Related work
+- [Gadgetron](http://gadgetron.github.io)
+- Doron Friedman

@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+aws s3 cp --acl public-read ./bin/cloud/install s3://brainiak/install.sh
+cfncluster --config=./cloud/aws/config create --norollback rtcloud
