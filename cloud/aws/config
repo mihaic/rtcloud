@@ -10,7 +10,6 @@ vpc_settings = public
 [vpc public]
 vpc_id = vpc-5c40b639
 master_subnet_id = subnet-de395abb
-vpc_security_group_id = sg-d82683ad
 
 [global]
 cluster_template = rtcloud

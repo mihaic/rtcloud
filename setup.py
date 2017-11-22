@@ -15,7 +15,8 @@ setup(
         'numpy',
         'scipy',
         'pybind11',
-        'cython'
+        'cython',
+        'pika'
     ],
     extras_require={
         'demo': [

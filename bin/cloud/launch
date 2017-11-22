@@ -2,3 +2,5 @@
 
 aws s3 cp --acl public-read ./bin/cloud/install s3://brainiak/install.sh
 cfncluster --config=./cloud/aws/config create --norollback rtcloud
+aws ec2 describe-instances --filter Name=tag-value,Values=Master --no-paginate | jq -r '.Reservations[0].Instances[0].SecurityGroups[0].GroupId'
+

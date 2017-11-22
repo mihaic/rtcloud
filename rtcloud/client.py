@@ -20,6 +20,13 @@ class Client():
             self.connected = True
 
     def upload(self, input_dir='.', tr=2000, loop=True, watch=False):
+        self.send(input_dir, tr, loop, watch, 'upload')
+
+    def queue(self, input_dir='.', tr=2000, loop=True, watch=False):
+        self.send(input_dir, tr, loop, watch, 'queue')
+
+    def send(self, input_dir='.', tr=2000, loop=True,
+             watch=False, method='queue'):
         assert self.connected, 'Not connected to server!'
 
         # Python checks path based on current working directory
@@ -30,7 +37,8 @@ class Client():
         os.chdir(cwd)
 
         for path in paths:
-            req = requests.post(os.path.join(self.server_address, 'upload'),
+            print(path)
+            req = requests.post(os.path.join(self.server_address, method),
                                 files={
                 'file': open(path, 'r%s' % ('b' if is_binary(path) else ''))
             })

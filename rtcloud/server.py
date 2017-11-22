@@ -1,6 +1,7 @@
 import os
 import json
 import click
+import pika
 
 from .utils import Logger
 
@@ -42,6 +43,10 @@ class BrainiakCloud:
         ), 'start', self.start, methods=['POST'])
         self.app.add_url_rule(os.path.join(
             self.BASE_URL,
+            'queue',
+        ), 'queue', self.queue, methods=['POST'])
+        self.app.add_url_rule(os.path.join(
+            self.BASE_URL,
             'upload'
         ), 'upload', self.upload, methods=['POST'])
 
@@ -69,8 +74,16 @@ class BrainiakCloud:
         self.experimentOpts = request.form
         return 'Successfully started!', 200
 
+    def queue(self):
+        print(request.files)
+        if 'file' not in request.files:
+            return redirect(request.url)
+
+        print(request.files['file'])
+
+        return 'Success!', 202
+
     # TODO: Have any semblance at all of error handling
-    # TODO: replace with RabbitMQ or some queue
     def upload(self):
         # check if the post request has the file part
         if 'file' not in request.files:
