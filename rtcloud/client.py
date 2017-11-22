@@ -30,11 +30,19 @@ def open_path(path):
 
 
 class Client():
-    def __init__(self, server_address=None, conf=None):
-        assert server_address is not None, 'server_address required'
+    def __init__(self, server_ip=None, conf=None, http_endpoint='brainiak',
+            server_port=21216, rmq_port=5672):
+        assert server_ip is not None, 'server_address required'
         assert conf is not None, 'conf required'
 
-        self.server_address = server_address
+        self.server_ip = server_ip
+        self.server_port = server_port
+
+        self.server_address = 'http://%s:%d' % \
+                (self.server_ip, self.server_port)
+        self.server_address = os.path.join(self.server_address, http_endpoint)
+
+        self.rmq_port = rmq_port
         self.conf = conf
         self.connected = False
         self.name = 'rtcloud'
