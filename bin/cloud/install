@@ -60,4 +60,4 @@ su - ubuntu
 env
 
 # Run server as ubuntu
-su ubuntu -c "serve $USER_HOME/rtcloud/conf/example.json > $USER_HOME/server.out 2>&1 &"
+su ubuntu -c "serve $USER_HOME/rtcloud/conf/server.json > $USER_HOME/server.out 2>&1 &"

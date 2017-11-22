@@ -1,0 +1,10 @@
+{
+  "BASE_URL": "brainiak",
+  "PORT": 21216,
+  "UPLOAD_FOLDER": "uploads",
+  "ALLOWED_EXTENSIONS": [
+    "dcm"
+  ],
+  "DEBUG": true,
+  "IGNORE_EXPERIMENT": true
+}

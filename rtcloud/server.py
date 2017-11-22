@@ -1,12 +1,11 @@
 import os
-import sys
 import json
 import click
 
-from rtcloud.utils import Logger
+from .utils import Logger
 
-from flask import Flask, request, redirect, url_for, flash, session, send_from_directory
 from werkzeug.utils import secure_filename
+from flask import Flask, request, redirect
 from flask_session import Session
 
 import rtcloud.experiments as experiments
@@ -15,14 +14,16 @@ import rtcloud.experiments as experiments
 class BrainiakCloud:
     def __init__(self, opts):
         self.app = Flask(__name__)
-        self.BASE_URL = '/' + opts.get('BASE_URL')
+        self.opts = opts
+
+        self.BASE_URL = '/' + self.opts.get('BASE_URL')
 
         # Debug utilities
         self.logger = Logger()
 
         # Configure
-        self.app.config['UPLOAD_FOLDER'] = opts.get('UPLOAD_FOLDER')
-        self.ALLOWED_EXTENSIONS = set(opts.get('ALLOWED_EXTENSIONS'))
+        self.app.config['UPLOAD_FOLDER'] = self.opts.get('UPLOAD_FOLDER')
+        self.ALLOWED_EXTENSIONS = set(self.opts.get('ALLOWED_EXTENSIONS'))
 
         # Initialize secrets
         # TODO: Add Config to handle secret data
@@ -35,18 +36,26 @@ class BrainiakCloud:
 
         # Initialize routes
         self.app.add_url_rule(self.BASE_URL, '/', self.index, methods=['GET'])
-        self.app.add_url_rule(self.BASE_URL, 'upload',
-                              self.upload, methods=['POST'])
+        self.app.add_url_rule(os.path.join(
+            self.BASE_URL,
+            'start'
+        ), 'start', self.start, methods=['POST'])
+        self.app.add_url_rule(os.path.join(
+            self.BASE_URL,
+            'upload'
+        ), 'upload', self.upload, methods=['POST'])
 
-        if not opts.get('IGNORE_EXPERIMENT'):
+        if not self.opts.get('IGNORE_EXPERIMENT'):
             # Initialize experiment
             self.experimentClass = getattr(
-                experiments, opts.get('experimentClass'))
-            self.experiment = self.experimentClass(opts)
+                experiments, self.opts.get('experimentClass'))
+            self.experiment = self.experimentClass(self.opts)
 
         # Ready to roll
-        self.app.debug = opts.get('DEBUG')
-        self.app.run(host='0.0.0.0')
+        self.app.debug = self.opts.get('DEBUG')
+        self.app.run(host='0.0.0.0', port=self.opts.get('PORT'))
+
+        self.experimentOpts = None
 
     def allowed_file(self, filename):
         # TODO: This is a crappy way to check extensions
@@ -56,7 +65,12 @@ class BrainiakCloud:
     def index(self):
         return 'Hello, world!'
 
+    def start(self):
+        self.experimentOpts = request.form
+        return 'Successfully started!', 200
+
     # TODO: Have any semblance at all of error handling
+    # TODO: replace with RabbitMQ or some queue
     def upload(self):
         # check if the post request has the file part
         if 'file' not in request.files:
@@ -70,13 +84,19 @@ class BrainiakCloud:
             return redirect(request.url)
         if file and self.allowed_file(file.filename):
             filename = secure_filename(file.filename)
+
+            path = os.path.join(
+                os.getcwd(),
+                self.app.config['UPLOAD_FOLDER']
+            )
+            os.system('mkdir -p %s' % path)
             filepath = os.path.join(self.app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
 
-            if not opts.get('IGNORE_EXPERIMENT'):
+            if not self.opts.get('IGNORE_EXPERIMENT'):
                 self.experiment.process(filepath)
 
-            return 'Success!'
+            return 'Successfully queued!', 202
         return 'FAIL!'
 
 

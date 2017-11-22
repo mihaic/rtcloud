@@ -10,6 +10,7 @@ setup(
         'watchdog',
         'flask',
         'flask_session',
+        'binaryornot',
         'cfncluster',
         'numpy',
         'scipy',
