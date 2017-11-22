@@ -67,6 +67,9 @@ apt-get -qy install rabbitmq-server
 # Stop default rabbitmq-service on EC2
 service rabbitmq-service stop
 
+# TODO: This turns off authentication, which is bad
+echo "[{rabbit, [{loopback_users, []}]}]." >> /etc/rabbitmq/rabbitmq.config
+
 # Set permissions
 chown -R ubuntu:ubuntu $USER_HOME/rtcloud
 

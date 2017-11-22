@@ -63,10 +63,10 @@ class Client():
     def queue(self, input_dir='.', tr=2000, loop=True, watch=False):
         assert self.connected, 'Not connected to server!'
 
-        def queue_helper(queue_work_name, input_dir, tr, loop):
+        def queue_helper(server_ip, queue_work_name, input_dir, tr, loop):
             # NOTE: Each process needs its own set of file descriptors
             # TODO: parameterize address
-            channel = get_channel('localhost', queue_work_name)
+            channel = get_channel(server_ip, queue_work_name)
             paths = get_paths(input_dir)
 
             while True:
@@ -81,6 +81,7 @@ class Client():
                     break
 
         process = mp.Process(target=queue_helper, args=(
+            self.server_ip,
             self.queue_work_name,
             input_dir,
             tr,
@@ -107,8 +108,8 @@ class Client():
         assert self.connected, 'Not connected to server!'
         print('Starting to watch!')
 
-        def watch_helper(queue_result_name, callback):
-            channel = get_channel('localhost', queue_result_name)
+        def watch_helper(server_ip, queue_result_name, callback):
+            channel = get_channel(server_ip, queue_result_name)
 
             def callback_rmq(channel, method, properties, body):
                 callback(body)
@@ -120,6 +121,7 @@ class Client():
             channel.start_consuming()
 
         process = mp.Process(target=watch_helper, args=(
+            self.server_ip,
             self.queue_result_name,
             callback,
             ))
