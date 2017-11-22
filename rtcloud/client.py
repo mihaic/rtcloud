@@ -28,12 +28,18 @@ class Client():
         self.conf = conf
         self.connected = False
         self.name = 'rtcloud'
+        self.queue_work_name = '%s_work' % self.name
+        self.queue_result_name = '%s_result' % self.name
+
         self.conf['name'] = self.name
+        self.conf['queue_work_name'] = self.queue_work_name
+        self.conf['queue_result_name'] = self.queue_result_name
 
     def start(self):
         req = requests.post(os.path.join(self.server_address, 'start'),
                             data=self.conf)
 
+        print(req.status_code)
         if req.status_code == 200:
             self.connected = True
 
@@ -42,14 +48,14 @@ class Client():
 
         rmq = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
         channel = rmq.channel()
-        channel.queue_declare(queue=self.name)
+        channel.queue_declare(queue=self.queue_work_name)
 
         paths = get_paths(input_dir)
         for path in paths:
             print(path)
             channel.basic_publish(
                     exchange='',
-                    routing_key=self.name,
+                    routing_key=self.queue_work_name,
                     body=open_path(path).read()
                     )
 

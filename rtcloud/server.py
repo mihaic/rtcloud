@@ -74,13 +74,15 @@ class Server:
         return 'Hello, world!'
 
     def start(self):
+        print(request.form)
         self.experimentOpts = request.form
         self.logger.info('Starting experiment %s' %
-                self.experimentOpts['name'])
+                         self.experimentOpts['name'])
 
         # TODO: this is pretty terrible and I don't even bother joining
         process = mp.Process(target=Launcher, args=(
-            self.experimentOpts['name'],
+            self.experimentOpts['queue_work_name'],
+            self.experimentOpts['queue_result_name'],
             ))
         process.start()
         return 'Successfully started!', 200
