@@ -145,5 +145,5 @@ def serve(conf):
     if not Path(rmq).is_file():
         rmq = '/usr/sbin/rabbitmq-server'
 
-    subprocess.Popen(['/usr/local/sbin/rabbitmq-server'])
+    subprocess.Popen([rmq])
     server = Server(opts)
