@@ -142,7 +142,7 @@ def serve(conf):
 
     # Assume rabbitmq-server is installed
     rmq = ['/usr/local/sbin/rabbitmq-server']
-    if not Path(rmq).is_file():
+    if not Path(rmq[0]).is_file():
         rmq = ['sudo', '/usr/sbin/rabbitmq-server']
 
     subprocess.Popen(rmq)
