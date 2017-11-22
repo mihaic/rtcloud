@@ -33,3 +33,15 @@ $DIR/install_brainiak
 # source venv/bin/activate
 sudo python3 -m pip install -e .
 # deactivate
+
+# Install rabbitmq
+sudo cat <<EOF > /etc/apt/sources.list.d/rabbitmq.list
+deb http://www.rabbitmq.com/debian/ testing main
+EOF
+
+curl https://www.rabbitmq.com/rabbitmq-release-signing-key.asc -o /tmp/rabbitmq-release-signing-key.asc
+sudo apt-key add /tmp/rabbitmq-release-signing-key.asc
+rm /tmp/rabbitmq-release-signing-key.asc
+
+sudo apt-get -qy update
+sudo apt-get -qy install rabbitmq-server

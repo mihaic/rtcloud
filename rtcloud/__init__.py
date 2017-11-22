@@ -4,9 +4,9 @@ Your brain in the cloud.
 A work in progress. More documentation to come.
 """
 
-from .client import (
-    Client
-)
+from .server import Server
+from .client import Client
+from .launcher import Launcher
 
 from .experiments import (
     Experiment,
@@ -20,7 +20,9 @@ from .utils import (
 )
 
 __all__ = [
+    'Server',
     'Client',
+    'Launcher',
 
     'Experiment',
     'FCMAExperiment',

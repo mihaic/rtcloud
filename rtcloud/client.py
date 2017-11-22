@@ -1,6 +1,22 @@
 import os
+import pika
 import requests
 from binaryornot.check import is_binary
+
+
+def get_paths(input_dir='.'):
+    # Python checks path based on current working directory
+    cwd = os.getcwd()
+    os.chdir(input_dir)
+    paths = [os.path.abspath(path) for path in os.listdir()]
+    paths = filter(os.path.isfile, paths)
+    os.chdir(cwd)
+
+    return paths
+
+
+def open_path(path):
+    return open(path, 'r%s' % ('b' if is_binary(path) else ''))
 
 
 class Client():
@@ -11,6 +27,8 @@ class Client():
         self.server_address = server_address
         self.conf = conf
         self.connected = False
+        self.name = 'rtcloud'
+        self.conf['name'] = self.name
 
     def start(self):
         req = requests.post(os.path.join(self.server_address, 'start'),
@@ -19,28 +37,31 @@ class Client():
         if req.status_code == 200:
             self.connected = True
 
-    def upload(self, input_dir='.', tr=2000, loop=True, watch=False):
-        self.send(input_dir, tr, loop, watch, 'upload')
-
     def queue(self, input_dir='.', tr=2000, loop=True, watch=False):
-        self.send(input_dir, tr, loop, watch, 'queue')
-
-    def send(self, input_dir='.', tr=2000, loop=True,
-             watch=False, method='queue'):
         assert self.connected, 'Not connected to server!'
 
-        # Python checks path based on current working directory
-        cwd = os.getcwd()
-        os.chdir(input_dir)
-        paths = [os.path.abspath(path) for path in os.listdir()]
-        paths = filter(os.path.isfile, paths)
-        os.chdir(cwd)
+        rmq = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        channel = rmq.channel()
+        channel.queue_declare(queue=self.name)
 
+        paths = get_paths(input_dir)
         for path in paths:
             print(path)
-            req = requests.post(os.path.join(self.server_address, method),
+            channel.basic_publish(
+                    exchange='',
+                    routing_key=self.name,
+                    body=open_path(path).read()
+                    )
+
+    def upload(self, input_dir='.', tr=2000, loop=True, watch=False):
+        assert self.connected, 'Not connected to server!'
+
+        paths = get_paths(input_dir)
+
+        for path in paths:
+            req = requests.post(os.path.join(self.server_address, 'upload'),
                                 files={
-                'file': open(path, 'r%s' % ('b' if is_binary(path) else ''))
+                'file': open_path(path)
             })
 
             # TODO: Fail gracefully

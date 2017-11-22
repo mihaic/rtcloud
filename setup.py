@@ -6,6 +6,7 @@ setup(
     install_requires=[
         'click',
         'requests',
+        'pathos',
         'tqdm',
         'watchdog',
         'flask',

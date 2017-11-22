@@ -1,18 +1,25 @@
 import os
+import sys
 import json
-import click
-import pika
+import signal
+import subprocess
 
-from .utils import Logger
+from pathlib import Path
+
+import click
+from pathos.helpers import mp
 
 from werkzeug.utils import secure_filename
 from flask import Flask, request, redirect
 from flask_session import Session
 
+from .utils import Logger
+from .launcher import Launcher
+
 import rtcloud.experiments as experiments
 
 
-class BrainiakCloud:
+class Server:
     def __init__(self, opts):
         self.app = Flask(__name__)
         self.opts = opts
@@ -40,53 +47,43 @@ class BrainiakCloud:
         self.app.add_url_rule(os.path.join(
             self.BASE_URL,
             'start'
-        ), 'start', self.start, methods=['POST'])
-        self.app.add_url_rule(os.path.join(
-            self.BASE_URL,
-            'queue',
-        ), 'queue', self.queue, methods=['POST'])
+            ), 'start', self.start, methods=['POST'])
         self.app.add_url_rule(os.path.join(
             self.BASE_URL,
             'upload'
-        ), 'upload', self.upload, methods=['POST'])
+            ), 'upload', self.upload, methods=['POST'])
 
         if not self.opts.get('IGNORE_EXPERIMENT'):
             # Initialize experiment
             self.experimentClass = getattr(
-                experiments, self.opts.get('experimentClass'))
+                    experiments, self.opts.get('experimentClass'))
             self.experiment = self.experimentClass(self.opts)
+
+        self.experimentOpts = None
 
         # Ready to roll
         self.app.debug = self.opts.get('DEBUG')
         self.app.run(host='0.0.0.0', port=self.opts.get('PORT'))
 
-        self.experimentOpts = None
-
-        # Set up RabbitMQ
-        self.rabbitmq = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-        self.channel = self.rabbitmq.channel()
-        self.channel.queue_declare(queue='rtcloud')
-
     def allowed_file(self, filename):
         # TODO: This is a crappy way to check extensions
         return '.' in filename and \
-            filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
+                filename.rsplit('.', 1)[1].lower() in self.ALLOWED_EXTENSIONS
 
     def index(self):
         return 'Hello, world!'
 
     def start(self):
         self.experimentOpts = request.form
+        self.logger.info('Starting experiment %s' %
+                self.experimentOpts['name'])
+
+        # TODO: this is pretty terrible and I don't even bother joining
+        process = mp.Process(target=Launcher, args=(
+            self.experimentOpts['name'],
+            ))
+        process.start()
         return 'Successfully started!', 200
-
-    def queue(self):
-        print(request.files)
-        if 'file' not in request.files:
-            return redirect(request.url)
-
-        print(request.files['file'])
-
-        return 'Success!', 202
 
     # TODO: Have any semblance at all of error handling
     def upload(self):
@@ -104,9 +101,9 @@ class BrainiakCloud:
             filename = secure_filename(file.filename)
 
             path = os.path.join(
-                os.getcwd(),
-                self.app.config['UPLOAD_FOLDER']
-            )
+                    os.getcwd(),
+                    self.app.config['UPLOAD_FOLDER']
+                    )
             os.system('mkdir -p %s' % path)
             filepath = os.path.join(self.app.config['UPLOAD_FOLDER'], filename)
             file.save(filepath)
@@ -118,6 +115,18 @@ class BrainiakCloud:
         return 'FAIL!'
 
 
+def signal_handler(signal, frame):
+    print('You pressed Ctrl-C!')
+
+    def kill(name):
+        subprocess.call(
+                "kill $(ps aux | grep %s | grep -v grep | "
+                "awk '{ print $2 }') 2> /dev/null" % name, shell=True)
+        #  subprocess.check_call(['killall', 'rabbitmq-server'])
+    kill('rabbitmq-server')
+    sys.exit(0)
+
+
 @click.command(context_settings=dict(help_option_names=["-h", "--help"]))
 @click.argument('conf')
 def serve(conf):
@@ -127,4 +136,12 @@ def serve(conf):
         # TODO: Check schema and print usage if wrong
         opts = json.load(json_data)
 
-    server = BrainiakCloud(opts)
+    signal.signal(signal.SIGINT, signal_handler)
+
+    # Assume rabbitmq-server is installed
+    rmq = '/usr/local/sbin/rabbitmq-server'
+    if not Path(rmq).is_file():
+        rmq = '/usr/sbin/rabbitmq-server'
+
+    subprocess.Popen(['/usr/local/sbin/rabbitmq-server'])
+    server = Server(opts)

@@ -13,6 +13,7 @@ mpich
 python3
 
 awscli
+rabbitmq
 
 # Ray
 # cmake
