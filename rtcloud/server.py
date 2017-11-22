@@ -62,6 +62,11 @@ class BrainiakCloud:
 
         self.experimentOpts = None
 
+        # Set up RabbitMQ
+        self.rabbitmq = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
+        self.channel = self.rabbitmq.channel()
+        self.channel.queue_declare(queue='rtcloud')
+
     def allowed_file(self, filename):
         # TODO: This is a crappy way to check extensions
         return '.' in filename and \

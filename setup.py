@@ -12,6 +12,8 @@ setup(
         'flask_session',
         'binaryornot',
         'cfncluster',
+        'matplotlib',
+        'nilearn',
         'numpy',
         'scipy',
         'pybind11',
