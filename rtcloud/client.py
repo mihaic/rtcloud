@@ -1,7 +1,9 @@
 import os
+import time
 import pika
 import requests
 from binaryornot.check import is_binary
+from pathos.helpers import mp
 
 
 def get_paths(input_dir='.'):
@@ -9,10 +11,18 @@ def get_paths(input_dir='.'):
     cwd = os.getcwd()
     os.chdir(input_dir)
     paths = [os.path.abspath(path) for path in os.listdir()]
-    paths = filter(os.path.isfile, paths)
+    paths = list(filter(os.path.isfile, paths))
     os.chdir(cwd)
 
     return paths
+
+
+def get_channel(address, queue):
+    rmq = pika.BlockingConnection(pika.ConnectionParameters(address))
+    channel = rmq.channel()
+    channel.queue_declare(queue=queue)
+
+    return channel
 
 
 def open_path(path):
@@ -37,27 +47,41 @@ class Client():
 
     def start(self):
         req = requests.post(os.path.join(self.server_address, 'start'),
-                            data=self.conf)
+                data=self.conf)
 
-        print(req.status_code)
         if req.status_code == 200:
             self.connected = True
 
     def queue(self, input_dir='.', tr=2000, loop=True, watch=False):
         assert self.connected, 'Not connected to server!'
 
-        rmq = pika.BlockingConnection(pika.ConnectionParameters('localhost'))
-        channel = rmq.channel()
-        channel.queue_declare(queue=self.queue_work_name)
+        def queue_helper(queue_work_name, input_dir, tr, loop):
+            # NOTE: Each process needs its own set of file descriptors
+            # TODO: parameterize address
+            channel = get_channel('localhost', queue_work_name)
+            paths = get_paths(input_dir)
 
-        paths = get_paths(input_dir)
-        for path in paths:
-            print(path)
-            channel.basic_publish(
-                    exchange='',
-                    routing_key=self.queue_work_name,
-                    body=open_path(path).read()
-                    )
+            while True:
+                for path in paths:
+                    channel.basic_publish(
+                            exchange='',
+                            routing_key=queue_work_name,
+                            body=open_path(path).read()
+                            )
+                    time.sleep(float(tr / 1000))
+                if not loop:
+                    break
+
+        process = mp.Process(target=queue_helper, args=(
+            self.queue_work_name,
+            input_dir,
+            tr,
+            loop,
+            ))
+
+        process.start()
+
+        return
 
     def upload(self, input_dir='.', tr=2000, loop=True, watch=False):
         assert self.connected, 'Not connected to server!'
@@ -66,13 +90,33 @@ class Client():
 
         for path in paths:
             req = requests.post(os.path.join(self.server_address, 'upload'),
-                                files={
-                'file': open_path(path)
-            })
+                    files={'file': open_path(path)})
 
             # TODO: Fail gracefully
             assert req.status_code == 202
 
-    def watch(self, result_queue=None, callback=lambda *args: None):
+    def watch(self, callback=lambda *args: None):
         assert self.connected, 'Not connected to server!'
-        assert result_queue is not None, 'result_queue required'
+        print('Starting to watch!')
+
+        def watch_helper(queue_result_name, callback):
+            channel = get_channel('localhost', queue_result_name)
+
+            def callback_rmq(channel, method, properties, body):
+                callback(body)
+
+            channel.basic_consume(
+                    callback_rmq,
+                    queue=queue_result_name,
+                    no_ack=True)
+            channel.start_consuming()
+
+        process = mp.Process(target=watch_helper, args=(
+            self.queue_result_name,
+            callback,
+            ))
+
+        process.start()
+
+        return
+
