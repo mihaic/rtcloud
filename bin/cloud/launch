@@ -3,7 +3,7 @@
 aws s3 cp --acl public-read ./bin/cloud/install s3://brainiak/install.sh
 cfncluster --config=./cloud/aws/config create --norollback rtcloud
 
-INSTANCE_ID=`aws ec2 describe-instances --filter Name=tag-value,Values=Master --no-paginate | jq -r '.Reservations[0].Instances[0].InstanceId'
+INSTANCE_ID=`aws ec2 describe-instances --filter Name=tag-value,Values=Master --no-paginate | jq -r '.Reservations[0].Instances[0].InstanceId'`
 
 # Open ports for our application
 GROUP_ID=`aws ec2 describe-instances --filter Name=tag-value,Values=Master --no-paginate | jq -r '.Reservations[0].Instances[0].SecurityGroups[0].GroupId'`
@@ -13,4 +13,3 @@ aws ec2 authorize-security-group-ingress --group-id $GROUP_ID --protocol tcp --p
 
 # RabbitMQ
 aws ec2 authorize-security-group-ingress --group-id $GROUP_ID --protocol tcp --port 5672 --cidr 0.0.0.0/0
-

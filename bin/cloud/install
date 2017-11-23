@@ -64,8 +64,13 @@ rm /tmp/rabbitmq-release-signing-key.asc
 apt-get -qy update
 apt-get -qy install rabbitmq-server
 
-# Stop default rabbitmq-service on EC2
-service rabbitmq-service stop
+# Stop default rabbitmq-server on EC2
+service rabbitmq-server stop
+# systemctl stop rabbitmq-server
+# systemctl disable rabbitmq-server
+# rm /etc/init.d/rabbitmq-server
+# systemctl daemon-reload
+# systemctl reset-failed
 
 # TODO: This turns off authentication, which is bad
 echo "[{rabbit, [{loopback_users, []}]}]." >> /etc/rabbitmq/rabbitmq.config
