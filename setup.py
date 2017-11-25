@@ -14,6 +14,7 @@ setup(
         'binaryornot',
         'cfncluster',
         'matplotlib',
+        'pandas',
         'nilearn',
         'numpy',
         'scipy',

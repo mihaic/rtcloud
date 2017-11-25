@@ -9,7 +9,7 @@ class Launcher:
         self.channel.queue_declare(queue=result_queue)
 
         def callback(channel, method, properties, body):
-            print('Received message: %s' % body)
+            print('Received message!')
             self.channel.basic_publish(
                     exchange='',
                     routing_key=result_queue,
