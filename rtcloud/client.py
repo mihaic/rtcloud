@@ -82,15 +82,18 @@ class Client():
         input_counter = 0
         output_counter = 0
 
+        import matplotlib.pylab as plt
+
+        f, axarr = plt.subplots(2, sharey=True)
         while True:
             result = self.display_queue.get()
             if result['src'] == 'input':
                 input_counter += 1
-                display_input(result['data'], input_counter)
+                display_input(result['data'], input_counter, f, axarr[0])
 
             if result['src'] == 'output':
                 output_counter += 1
-                display_output(result['data'], output_counter)
+                display_output(result['data'], output_counter, f, axarr[1])
 
     def queue(self, input_dir='.', tr=2000, loop=True, watch=False):
         assert self.connected, 'Not connected to server!'
