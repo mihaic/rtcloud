@@ -24,6 +24,7 @@ setup(
     ],
     extras_require={
         'demo': [
+            'ipywidgets',
             'jupyter',
             'brainiak'
         ]

@@ -54,5 +54,8 @@ export CPPFLAGS="-I/usr/local/opt/llvm/include $CPPFLAGS"
 pip install -e .
 env ARCHFLAGS="-arch x86_64" pip install -e '.[demo]'
 
+# Enable widgets
+jupyter nbextension enable --py widgetsnbextension
+
 deactivate
 
