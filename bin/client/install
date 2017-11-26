@@ -55,9 +55,9 @@ pip install -e .
 env ARCHFLAGS="-arch x86_64" pip install -e '.[demo]'
 
 # Enable widgets
-jupyter nbextension enable --py widgetsnbextension
-jupyter contrib nbextension install
-jupyter nbextension enable skip-traceback/main
+# jupyter contrib nbextension install
+# jupyter nbextension enable --py widgetsnbextension
+# jupyter nbextension enable skip-traceback/main
 
 deactivate
 
