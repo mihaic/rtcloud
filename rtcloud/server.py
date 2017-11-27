@@ -1,4 +1,5 @@
 import os
+import pickle
 import sys
 import json
 import signal
@@ -74,8 +75,8 @@ class Server:
         return 'Hello, world!'
 
     def start(self):
-        print(request.form)
-        self.experimentOpts = request.form
+        # print(request.form)
+        self.experimentOpts = pickle.loads(request.get_data())
         self.logger.info('Starting experiment %s' %
                          self.experimentOpts['name'])
 
@@ -83,6 +84,7 @@ class Server:
         process = mp.Process(target=Launcher, args=(
             self.experimentOpts['queue_work_name'],
             self.experimentOpts['queue_result_name'],
+            self.experimentOpts.get('experiment_data'),
             ))
         process.start()
         return 'Successfully started!', 200
@@ -120,12 +122,14 @@ class Server:
 def signal_handler(signal, frame):
     print('You pressed Ctrl-C!')
 
-    def kill(name):
-        subprocess.call(
-                "kill $(ps aux | grep %s | grep -v grep | "
-                "awk '{ print $2 }') 2> /dev/null" % name, shell=True)
-        #  subprocess.check_call(['killall', 'rabbitmq-server'])
-    kill('rabbitmq-server')
+    # def kill(name):
+    #     subprocess.call(
+    #             "kill $(ps aux | grep %s | grep -v grep | "
+    #             "awk '{ print $2 }') 2> /dev/null" % name, shell=True)
+    #     #  subprocess.check_call(['killall', 'rabbitmq-server'])
+    # kill('rabbitmq-server')
+    rmq_stop = ['sudo', 'rabbitmqctl', 'stop']
+    subprocess.call(rmq_stop)
     sys.exit(0)
 
 
@@ -141,9 +145,7 @@ def serve(conf):
     signal.signal(signal.SIGINT, signal_handler)
 
     # Assume rabbitmq-server is installed
-    rmq = ['/usr/local/sbin/rabbitmq-server']
-    if not Path(rmq[0]).is_file():
-        rmq = ['sudo', '/usr/sbin/rabbitmq-server']
+    rmq = ['sudo', 'service', 'rabbitmq-server', 'start']
 
     subprocess.Popen(rmq)
     server = Server(opts)

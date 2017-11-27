@@ -1,7 +1,9 @@
 import os
+import pickle
 import time
 import pathlib
 
+import nibabel
 import pika
 import requests
 from binaryornot.check import is_binary
@@ -71,7 +73,7 @@ class Client():
 
     def start(self):
         req = requests.post(os.path.join(self.server_address, 'start'),
-                            data=self.conf)
+                            data=pickle.dumps(self.conf))
 
         if req.status_code == 200:
             self.connected = True
@@ -108,7 +110,7 @@ class Client():
                     channel.basic_publish(
                         exchange='',
                         routing_key=queue_work_name,
-                        body=open_path(path).read()
+                        body=pickle.dumps(nibabel.load(path).get_data())
                     )
                     display_queue.put({
                         'src': 'input',
@@ -153,7 +155,7 @@ class Client():
             def callback_rmq(channel, method, properties, body):
                 display_queue.put({
                     'src': 'output',
-                    'data': body
+                    'data': pickle.loads(body)
                 })
                 callback(body)
 
